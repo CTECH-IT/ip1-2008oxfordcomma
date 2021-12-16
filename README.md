@@ -2,6 +2,8 @@ Dre Harm
 
 As of now my goal will be trying to make an asteroid-style game like I made a while back a while ago in Unity.
 
+v0.1 
+
 Stuff I need to do: 
 - Make a ship
     - Possible ship customization
@@ -19,6 +21,8 @@ Stuff I need to do:
     - Either how long you were alive or amount of asteroids
 - Game over Screen
 - Extra Stuff
+    - Indicator to show the nose of the ship
+        - Maybe a dot?
     - Power ups 
         -Shield
 
