@@ -2,7 +2,7 @@ Dre Harm
 
 As of now my goal will be trying to make an asteroid-style game like I made a while back a while ago in Unity.
 
-v0.1 
+v0.1 Added ship - Set up canvas and background - Trying out FPS
 
 Stuff I need to do: 
 - Make a ship
