@@ -1,5 +1,10 @@
 const FPS = 30; // frames per second
 const FRICTION = 0.7; // friction coefficient (0 = no friction, 1 = lots of friction)
+const ASTEROIDS_JAG = 0.2; // jaggednes of the asteroids (0 = none, 1 = lots)
+const ASTEROIDS_NUM = 3; // starting number of asteroids
+const ASTEROIDS_SIZE = 100; // starting number of asteroids
+const ASTEROIDS_SPD = 50; // max starting speed of asteroids in pixels per second
+const ASTEROIDS_VERT = 10; // average number of vertices on each asteroid
 const SHIP_SIZE = 30; // ship height in px
 const SHIP_THRUST = 5; // accelerationof the ship in px per second
 const TURN_SPEED = 360; // turn speed in degrees per second
@@ -16,9 +21,13 @@ var ship = {
     thrusting: false,
     thrust: {
         x: 0,
-        y: 0
+        y: 0,
     }
 }
+
+// set up asteroids
+var asteroids = [];
+createAsteroidBelt();
 
 // set up event handlers
 document.addEventListener("keydown", keyDown);
@@ -26,6 +35,22 @@ document.addEventListener("keyup", keyUp);
 
 // set up the game loop
 setInterval(update, 1000 / FPS);
+
+function createAsteroidBelt() {
+    asteroids = [];
+    var x, y;
+    for (var i = 0; i < ASTEROIDS_NUM; i++) {
+        do {
+            x = Math.floor(Math.random() * canvas.width);
+            y = Math.floor(Math.random() * canvas.height);
+        } while(distBetweenPoints(ship.x, ship.y, x, y) < ASTEROIDS_SIZE * 2 + ship.r);
+        asteroids.push(newAsteroid(x, y));
+    }
+}
+
+function distBetweenPoints(x1, y1, x2, y2) {
+    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+}
 
 function keyDown(ev) {
     switch(ev.keyCode) {
@@ -53,6 +78,25 @@ function keyUp(ev) {
             ship.rot = 0;
             break;
     }
+}
+
+function newAsteroid(x, y) {
+    var asteroid = {
+        x: x,
+        y: y,
+        xv: Math.random() * ASTEROIDS_SPD / FPS * (Math.random() < 0.5 ? 1 : -1),
+        yv: Math.random() * ASTEROIDS_SPD / FPS * (Math.random() < 0.5 ? 1 : -1),
+        r: ASTEROIDS_SIZE / 2,
+        a: Math.random() * Math.PI * 2, // in radians
+        vert: Math.floor(Math.random() * (ASTEROIDS_VERT + 1) + ASTEROIDS_VERT / 2),
+        offs: []
+    };
+
+    // create the certex offset array
+    for (var i = 0; i < asteroid.vert; i++) {
+        asteroid.offs.push(Math.random() * ASTEROIDS_JAG * 2 + 1 - ASTEROIDS_JAG);
+    }
+    return asteroid;
 }
 
 function update() {
@@ -109,6 +153,54 @@ function update() {
     ctx.closePath();
     ctx.stroke();
 
+    // draw the asteroids
+    ctx.strokeStyle = "slategrey";
+    ctx.lineWidth = SHIP_SIZE / 20;
+    var x, y, r, a, vert, offs;
+    for (var i = 0; i < asteroids.length; i++) {
+        
+        // get the asteroid properties
+        x = asteroids[i].x;
+        y = asteroids[i].y;
+        r = asteroids[i].r;
+        a = asteroids[i].a;
+        vert = asteroids[i].vert;
+        offs = asteroids[i].offs;
+
+        // draw a path
+        ctx.beginPath();
+        ctx.moveTo(
+            x + r * offs[0] * Math.cos(a),
+            y + r * offs[0] * Math.sin(a)
+        );
+
+        // draw the polygon
+        for (var j = 1; j < vert; j++) {
+            ctx.lineTo(
+                x + r * offs[j] * Math.cos(a + j * Math.PI * 2 / vert),
+                y + r * offs[j] * Math.sin(a + j * Math.PI * 2 / vert),
+            );
+        }
+        ctx.closePath();
+        ctx.stroke();
+
+        // move the asteroid
+        asteroids[i].x += asteroids[i].xv;
+        asteroids[i].y += asteroids[i].yv;
+
+        // handle edge of screen
+        if (asteroids[i].x < 0 - asteroids[i].r) {
+            asteroids[i].x = canvas.width + asteroids[i].r;
+        } else if (asteroids[i].x > canvas.width + asteroids[i].r) {
+            asteroids[i].x = 0 - asteroids[i].r;
+        }
+        if (asteroids[i].y < 0 - asteroids[i].r) {
+            asteroids[i].y = canvas.height + asteroids[i].r;
+        } else if (asteroids[i].y > canvas.height + asteroids[i].r) {
+            asteroids[i].y = 0 - asteroids[i].r;
+        }
+    }
+
     // rotate ship
     ship.a += ship.rot;
 
@@ -127,8 +219,4 @@ function update() {
     } else if (ship.y > canvas.height + ship.r) {
         ship.y = 0 - ship.r;
     }  
-
-    // center dot
-    // ctx.fillStyle = "red";
-    // ctx.fillRect(ship.x - 1, ship.y - 1, 2, 2);
 }
