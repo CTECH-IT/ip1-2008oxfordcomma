@@ -1,0 +1,23 @@
+canvas {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+
+}
+
+body {
+    color: white;
+    background: #272b37;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 1em;
+}
+
+h1 {
+    margin: auto;
+    width: 10%;
+    padding: 10px;
+    color: #c1c0e0;
+    text-shadow: 0 0 10px #c1c0e0;
+}
