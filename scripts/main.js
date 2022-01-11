@@ -5,6 +5,9 @@ const LASER_DIST = 0.6; // max distance a laser can travelas fraction of screen 
 const LASER_MAX = 10; // maximum number of projectiles on screen at once
 const LASER_SPD = 500; // speed of lasers in pixels per second
 const ASTEROIDS_JAG = 0.4; // jaggednes of the asteroids (0 = none, 1 = lots)
+const ASTEROIDS_PTS_LARGE = 20; // points scored for a large asteroid
+const ASTEROIDS_PTS_MEDIUM = 50; // points scored for a medium asteroid
+const ASTEROIDS_PTS_SMALL = 100; // points scored for a small asteroid
 const ASTEROIDS_NUM = 1; // starting number of asteroids
 const ASTEROIDS_SIZE = 100; // starting number of asteroids
 const ASTEROIDS_SPD = 50; // max starting speed of asteroids in pixels per second
@@ -23,7 +26,7 @@ let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
 
 // set up the game parameters
-var level, lives, roids, ship, text, textAlpha;
+var level, lives, roids, score, ship, text, textAlpha;
 newGame();
 
 var ship = newShip();
@@ -56,9 +59,13 @@ function destroyAsteroid(index) {
     if (r == Math.ceil(ASTEROIDS_SIZE / 2)) {
         asteroids.push(newAsteroid(x, y, Math.ceil(ASTEROIDS_SIZE / 4)));
         asteroids.push(newAsteroid(x, y, Math.ceil(ASTEROIDS_SIZE / 4)));
+        score += ASTEROIDS_PTS_LARGE;
     } else if (r ==  Math.ceil(ASTEROIDS_SIZE / 4)) {
         asteroids.push(newAsteroid(x, y, Math.ceil(ASTEROIDS_SIZE / 8)));
         asteroids.push(newAsteroid(x, y, Math.ceil(ASTEROIDS_SIZE / 8)));
+        score += ASTEROIDS_PTS_MEDIUM;
+    } else {
+        score += ASTEROIDS_PTS_SMALL;
     }
 
     // destroy the asteroid
@@ -170,6 +177,7 @@ function newAsteroid(x, y, r) {
 function newGame() {
     level = 0;
     lives = GAME_LIVES;
+    score = 0;
     ship = newShip();
     newLevel();
 }
@@ -358,6 +366,13 @@ function update() {
     for (var i = 0; i < lives; i++) {
         drawShip(SHIP_SIZE + i * SHIP_SIZE * 1.2, SHIP_SIZE, 0.5 * Math.PI, 0.5 * Math.PI);
     }
+
+    // draw the score
+    ctx.textAlign = "right";
+    ctx.textBaseAlign = "middle";
+    ctx.fillStyle = "#c1c0e0";
+    ctx.font = TEXT_SIZE + "px sans mono";
+    ctx.fillText(score, canvas.width - SHIP_SIZE / 2, SHIP_SIZE + 5);
 
     // draw the asteroids
     var x, y, r, a, vert, offs;
