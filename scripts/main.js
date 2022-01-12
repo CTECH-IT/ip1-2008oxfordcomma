@@ -38,7 +38,7 @@ document.addEventListener("keyup", keyUp);
 // set up the game loop
 setInterval(update, 1000 / FPS);
 
-function createAsteroidBelt() {
+function createAsteroidBelt() { // creates the asteroid belt around the ship as to not spawn on top of the user
     asteroids = [];
     var x, y;
     for (var i = 0; i < ASTEROIDS_NUM + level; i++) {
@@ -50,7 +50,7 @@ function createAsteroidBelt() {
     }
 }
 
-function destroyAsteroid(index) {
+function destroyAsteroid(index) { // gets rid of an asteroid in the array and add a certain amount of points depending on the size of asteroid destroyed
     var x = asteroids[index].x;
     var y = asteroids[index].y;
     var r = asteroids[index].r;
@@ -78,11 +78,11 @@ function destroyAsteroid(index) {
     }
 }
 
-function distBetweenPoints(x1, y1, x2, y2) {
+function distBetweenPoints(x1, y1, x2, y2) { // finds the difference between 2 (x, y) coordinates
     return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 }
 
-function drawShip(x, y, a) {
+function drawShip(x, y, a) { // creates and draw the player's ship
     ctx.strokeStyle = "white";
     ctx.fillStyle = "#8d82a4";
     ctx.lineWidth = SHIP_SIZE / 20;
@@ -104,17 +104,17 @@ function drawShip(x, y, a) {
     ctx.fill();
 }
 
-function explodeShip() {
+function explodeShip() { // sets the ship explode time to less
     ship.explodeTime = Math.ceil(SHIP_EXPLODE_DUR * FPS);
 }
 
-function gameOver() {
+function gameOver() { // sets some varibales that are used to end the game
     ship.dead = true;
     text = "Game Over";
     textAlpha = 1.0;
 }
 
-function keyDown(ev) {
+function keyDown(ev) { // checks for when a key is pressed down which changes variables relating to ship movement and actions
     if (ship.dead) {
         return;
     }
@@ -134,7 +134,7 @@ function keyDown(ev) {
     }
 }
 
-function keyUp(ev) {
+function keyUp(ev) { // when a key is uunpressed to stop the action of the keyDown function
     if (ship.dead) {
         return;
     }
@@ -154,7 +154,7 @@ function keyUp(ev) {
     }
 }
 
-function newAsteroid(x, y, r) {
+function newAsteroid(x, y, r) { // creates a new asteroid and gives it properties
     var lvlMult = 1 + 0.1 * level;
     var asteroid = {
         x: x,
@@ -167,14 +167,14 @@ function newAsteroid(x, y, r) {
         offs: []
     };
 
-    // create the certex offset array
+    // create the vertex offset array
     for (var i = 0; i < asteroid.vert; i++) {
         asteroid.offs.push(Math.random() * ASTEROIDS_JAG * 2 + 1 - ASTEROIDS_JAG);
     }
     return asteroid;
 }
 
-function newGame() {
+function newGame() { // resets the game state
     level = 0;
     lives = GAME_LIVES;
     score = 0;
@@ -182,13 +182,13 @@ function newGame() {
     newLevel();
 }
 
-function newLevel() {
+function newLevel() { // changings the text variable to accunt for the increase in lvl and creates a new set of asteroids
     text = "Level " + (level + 1);
     textAlpha = 1.0;
     createAsteroidBelt();
 }
 
-function newShip() {
+function newShip() { // sets up a new ship and creates attributes for it
     return {
         x: canvas.width / 2,
         y: canvas.height / 2,
@@ -209,7 +209,7 @@ function newShip() {
     }
 }
 
-function shootLaser() {
+function shootLaser() { // is called to spawn a laser from the nose of the ship
     // create laser object
     if (ship.canShoot && ship.lasers.length < LASER_MAX) {
         ship.lasers.push({ // from the nose of the ship
