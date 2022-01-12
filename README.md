@@ -13,7 +13,5 @@ v0.6 Added text when a new level starts that displays the current level, added l
 Stuff I need to do: 
 - Make a ship
     - Possible ship customization
-- Score 
-    - Based on how long you were alive
 
 
